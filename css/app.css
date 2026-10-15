@@ -1,0 +1,425 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --surface: #181b22;
+  --surface-2: #232733;
+  --border: #2a2f3b;
+  --text: #f2f3f5;
+  --muted: #9aa1ad;
+  --accent: #22b462;
+  --on-accent: #04130a;
+  --danger: #f87171;
+  --radius: 16px;
+
+  /* Phase colours. Keep in sync with PHASE_COLORS in app.js. */
+  --ready: #2f6fed;
+  --work: #16a34a;
+  --rest: #f59e0b;
+  --done: #2a3140;
+  --on-ready: #fff;
+  --on-work: #fff;
+  --on-rest: #1d1300;
+  --on-done: #fff;
+
+  --pad-x: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input { font: inherit; color: inherit; }
+button { touch-action: manipulation; cursor: pointer; }
+[hidden] { display: none !important; }
+
+svg { width: 24px; height: 24px; fill: currentColor; }
+svg.stroke { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- App screens ---------- */
+
+.view {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding:
+    calc(8px + env(safe-area-inset-top))
+    calc(var(--pad-x) + env(safe-area-inset-right))
+    calc(24px + env(safe-area-inset-bottom))
+    calc(var(--pad-x) + env(safe-area-inset-left));
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  margin-bottom: 12px;
+}
+.bar h1 { flex: 1; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+
+.icon-btn {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+.icon-btn:active { background: var(--surface-2); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 600;
+}
+.btn:active { transform: scale(0.98); }
+.btn.wide { width: 100%; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-ghost { background: var(--surface); border: 1px solid var(--border); }
+.btn-text { min-height: 44px; padding: 0 12px; background: transparent; color: var(--accent); }
+.btn-danger { background: transparent; color: var(--danger); }
+
+/* Preset list */
+
+.preset-list { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 12px; }
+
+.preset {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.preset-start {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.preset-start:active { background: var(--surface-2); }
+
+.play-dot {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.play-dot svg { width: 26px; height: 26px; margin-left: 3px; }
+
+.preset-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.preset-name { font-size: 18px; font-weight: 650; }
+.preset-summary { color: var(--muted); font-size: 14px; }
+.preset-edit { margin-right: 8px; color: var(--muted); }
+
+/* Editor */
+
+.form { display: grid; gap: 14px; }
+
+.field { display: grid; gap: 6px; }
+.field-label, .group-title { color: var(--muted); font-size: 14px; }
+.group-title { margin: 0; }
+
+input:not([type]), .field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.group {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.phase-work { border-left: 6px solid var(--work); }
+.phase-rest { border-left: 6px solid var(--rest); }
+
+.group .label-input { background: var(--surface-2); font-weight: 600; }
+
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.row-label { font-weight: 500; }
+.row-hint { margin: 0; color: var(--muted); font-size: 14px; }
+
+.stepper { display: flex; align-items: center; gap: 6px; }
+.stepper button {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  font-size: 24px;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.stepper button:active { background: var(--border); }
+.stepper input {
+  width: 76px;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.seg {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg);
+  border-radius: 12px;
+}
+.seg label { flex: 1; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span {
+  display: grid;
+  place-items: center;
+  min-height: 42px;
+  padding: 0 6px;
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+.seg input:checked + span { background: var(--surface-2); color: var(--text); }
+.seg input:focus-visible + span { outline: 3px solid var(--accent); }
+
+/* Settings sheet */
+
+.sheet {
+  width: min(480px, calc(100vw - 2 * var(--pad-x)));
+  padding: 20px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.sheet::backdrop { background: rgb(0 0 0 / 0.6); }
+.sheet h2 { margin: 0 0 8px; font-size: 20px; }
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  border-bottom: 1px solid var(--border);
+}
+.switch-row small { display: block; color: var(--muted); font-size: 13px; }
+.switch-row input { width: 24px; height: 24px; accent-color: var(--accent); flex: none; }
+.sheet .row-hint { padding: 8px 0; }
+.sheet-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  padding: 12px 18px;
+  background: rgb(0 0 0 / 0.85);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* ---------- Running screen ---------- */
+
+.run {
+  --phase: var(--ready);
+  --on-phase: var(--on-ready);
+  min-height: 100dvh;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    calc(var(--pad-x) + env(safe-area-inset-right))
+    calc(16px + env(safe-area-inset-bottom))
+    calc(var(--pad-x) + env(safe-area-inset-left));
+  background: var(--phase);
+  color: var(--on-phase);
+  transition: background-color 0.25s;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  overflow: hidden;
+}
+.run[data-kind="work"] { --phase: var(--work); --on-phase: var(--on-work); }
+.run[data-kind="rest"] { --phase: var(--rest); --on-phase: var(--on-rest); }
+.run[data-kind="done"] { --phase: var(--done); --on-phase: var(--on-done); }
+
+.run-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: clamp(16px, 4.2vmin, 30px);
+  font-weight: 650;
+  opacity: 0.85;
+}
+
+.run-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5vmin;
+  min-height: 0;
+  text-align: center;
+}
+
+.run-label {
+  font-size: clamp(30px, 10vmin, 96px);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* --w is the text width in em, set from JS, so the digits fill the width without overflowing. */
+.run-time {
+  font-size: min(calc(88vw / var(--w, 2)), 46vh);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.run-time.small { font-size: min(calc(50vw / var(--w, 2)), 16vh); opacity: 0.85; }
+.run.paused .run-time { animation: blink 1.2s steps(2, jump-none) infinite; }
+.run.paused .run-label::after { content: " · paused"; }
+
+.run-tap {
+  padding: 0.35em 1.1em;
+  border: 4px solid currentColor;
+  border-radius: 999px;
+  font-size: clamp(24px, 7vmin, 60px);
+  font-weight: 800;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.run.paused .run-tap { animation: none; opacity: 0.5; }
+
+.run-progress {
+  width: min(92%, 1000px);
+  height: max(10px, 1.6vmin);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.2);
+  overflow: hidden;
+}
+#run-bar { height: 100%; background: currentColor; transform: scaleX(0); transform-origin: left; }
+
+.run-next { font-size: clamp(18px, 5vmin, 40px); font-weight: 650; opacity: 0.9; }
+
+.run-controls, .done-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 4vmin, 32px);
+}
+.done-controls { display: none; }
+.run[data-kind="done"] .run-controls { display: none; }
+.run[data-kind="done"] .done-controls { display: flex; }
+
+.ctl {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.2);
+  overflow: hidden;
+}
+.ctl:active { background: rgb(0 0 0 / 0.32); }
+.ctl svg { width: 30px; height: 30px; position: relative; }
+.ctl-big { width: 92px; height: 92px; }
+.ctl-big svg { width: 42px; height: 42px; }
+
+.ctl-stop { flex-direction: column; }
+.ctl-stop svg { width: 24px; height: 24px; }
+.ctl-caption { position: relative; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-top: -10px; }
+.ctl-stop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.45);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+.ctl-stop.holding::before { transform: scaleY(1); transition: transform 0.8s linear; }
+
+.pill {
+  min-width: 140px;
+  min-height: 64px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  font-size: 20px;
+  font-weight: 700;
+}
+.pill:first-child { background: var(--accent); color: var(--on-accent); }
+
+/* Phone on its side: controls move to the right so the digits get the height. */
+@media (orientation: landscape) and (max-height: 600px) {
+  .run {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .run-top { grid-column: 1 / -1; }
+  .run-controls, .done-controls { flex-direction: column; justify-content: center; }
+  .run[data-kind="done"] .done-controls { display: flex; }
+  .run-time { font-size: min(calc(68vw / var(--w, 2)), 58vh); }
+  .run-label { font-size: clamp(24px, 9vmin, 64px); }
+  .ctl { width: 56px; height: 56px; }
+  .ctl-big { width: 76px; height: 76px; }
+  .pill { min-width: 120px; min-height: 56px; }
+}
+
+@keyframes blink { 50% { opacity: 0.35; } }
+@keyframes pulse { 50% { transform: scale(1.06); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .run-tap, .run.paused .run-time { animation: none; }
+}

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f1115">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sport Timer">
+  <meta name="description" content="Interval timer for coaching: work, rest, rounds.">
+  <title>Sport Timer</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <!-- Home: saved timers -->
+  <main id="home" class="view">
+    <header class="bar">
+      <h1>Sport Timer</h1>
+      <button type="button" id="settings-btn" class="icon-btn" aria-label="Settings">
+        <svg viewBox="0 0 24 24" class="stroke" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+      </button>
+    </header>
+    <ul id="preset-list" class="preset-list"></ul>
+    <button type="button" id="new-btn" class="btn btn-ghost wide">
+      <svg viewBox="0 0 24 24" class="stroke" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      New timer
+    </button>
+  </main>
+
+  <!-- Editor -->
+  <main id="edit" class="view" hidden>
+    <header class="bar">
+      <button type="button" id="edit-back" class="icon-btn" aria-label="Back">
+        <svg viewBox="0 0 24 24" class="stroke" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h1 id="edit-title">Edit timer</h1>
+      <button type="button" id="save-btn" class="btn btn-text">Save</button>
+    </header>
+
+    <form id="edit-form" class="form" autocomplete="off">
+      <label class="field">
+        <span class="field-label">Name</span>
+        <input name="name" maxlength="40" enterkeyhint="done">
+      </label>
+
+      <section class="group">
+        <div class="row">
+          <span class="row-label">Get ready</span>
+          <div class="stepper" data-kind="duration" data-min="0" data-max="300" data-zero="Off">
+            <button type="button" data-step="-1" aria-label="Shorter">−</button>
+            <input name="delay" inputmode="numeric" aria-label="Get ready time">
+            <button type="button" data-step="1" aria-label="Longer">+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="group phase-work">
+        <p class="group-title">Work phase</p>
+        <input class="label-input" name="workLabel" maxlength="20" placeholder="Work" aria-label="Work phase name" enterkeyhint="done">
+        <div class="seg" role="radiogroup" aria-label="Work phase ends">
+          <label><input type="radio" name="workMode" value="timed"><span>Timed</span></label>
+          <label><input type="radio" name="workMode" value="tap"><span>Until tap</span></label>
+        </div>
+        <div class="row" data-when="workMode timed">
+          <span class="row-label">Duration</span>
+          <div class="stepper" data-kind="duration" data-min="1" data-max="3600">
+            <button type="button" data-step="-1" aria-label="Shorter">−</button>
+            <input name="workSeconds" inputmode="numeric" aria-label="Work duration">
+            <button type="button" data-step="1" aria-label="Longer">+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="group phase-rest">
+        <p class="group-title">Rest phase</p>
+        <input class="label-input" name="restLabel" maxlength="20" placeholder="Rest" aria-label="Rest phase name" enterkeyhint="done" data-when="restMode timed tap">
+        <div class="seg" role="radiogroup" aria-label="Rest phase ends">
+          <label><input type="radio" name="restMode" value="timed"><span>Timed</span></label>
+          <label><input type="radio" name="restMode" value="tap"><span>Until tap</span></label>
+          <label><input type="radio" name="restMode" value="off"><span>None</span></label>
+        </div>
+        <div class="row" data-when="restMode timed">
+          <span class="row-label">Duration</span>
+          <div class="stepper" data-kind="duration" data-min="1" data-max="3600">
+            <button type="button" data-step="-1" aria-label="Shorter">−</button>
+            <input name="restSeconds" inputmode="numeric" aria-label="Rest duration">
+            <button type="button" data-step="1" aria-label="Longer">+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="group">
+        <div class="row">
+          <span class="row-label">Rounds</span>
+          <div class="stepper" data-kind="count" data-min="0" data-max="99" data-zero="∞">
+            <button type="button" data-step="-1" aria-label="Fewer">−</button>
+            <input name="rounds" inputmode="numeric" aria-label="Rounds">
+            <button type="button" data-step="1" aria-label="More">+</button>
+          </div>
+        </div>
+        <p class="row-hint">∞ keeps going until you stop it. There's no rest after the last round.</p>
+      </section>
+
+      <button type="button" id="edit-start" class="btn btn-primary wide">Save and start</button>
+      <button type="button" id="delete-btn" class="btn btn-danger wide">Delete timer</button>
+    </form>
+  </main>
+
+  <!-- Running timer -->
+  <main id="run" class="run" hidden data-kind="ready">
+    <header class="run-top">
+      <span id="run-name"></span>
+      <span id="run-round"></span>
+    </header>
+
+    <section id="run-main" class="run-main">
+      <div id="run-label" class="run-label"></div>
+      <div id="run-time" class="run-time"></div>
+      <div id="run-tap" class="run-tap" hidden>Tap to continue</div>
+      <div class="run-progress"><div id="run-bar"></div></div>
+      <div id="run-next" class="run-next"></div>
+    </section>
+
+    <footer class="run-controls">
+      <button type="button" id="prev-btn" class="ctl" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5L9 12l10 7zM5 5h2.5v14H5z"/></svg>
+      </button>
+      <button type="button" id="pause-btn" class="ctl ctl-big" aria-label="Pause"></button>
+      <button type="button" id="next-btn" class="ctl" aria-label="Skip">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l10 7-10 7zM16.5 5H19v14h-2.5z"/></svg>
+      </button>
+      <button type="button" id="stop-btn" class="ctl ctl-stop" aria-label="Hold to stop">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        <span class="ctl-caption">Hold</span>
+      </button>
+    </footer>
+
+    <footer class="done-controls">
+      <button type="button" id="again-btn" class="pill">Again</button>
+      <button type="button" id="home-btn" class="pill">Home</button>
+    </footer>
+  </main>
+
+  <dialog id="settings" class="sheet">
+    <form method="dialog">
+      <h2>Settings</h2>
+      <label class="switch-row"><span>Sound</span><input type="checkbox" name="sound"></label>
+      <label class="switch-row"><span>Vibration</span><input type="checkbox" name="vibrate"></label>
+      <p id="no-vibrate" class="row-hint" hidden>This device or browser can't vibrate (iPhones don't allow it for web apps).</p>
+      <label class="switch-row"><span>3-2-1 countdown beeps</span><input type="checkbox" name="countdown"></label>
+      <label class="switch-row"><span>Warning 1 minute before the end<small>For phases of 2 minutes or more</small></span><input type="checkbox" name="minuteWarning"></label>
+      <div class="sheet-actions">
+        <button type="button" id="test-sound" class="btn btn-ghost">Test sound</button>
+        <button class="btn btn-primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
